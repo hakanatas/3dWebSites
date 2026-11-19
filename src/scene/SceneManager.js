@@ -43,9 +43,9 @@ export class SceneManager {
     this.scene.environmentIntensity = 0.62;
     pmremGenerator.dispose();
 
-    // Pointer parallax & user inspection rotation
+    // Pointer parallax & user inspection rotation/zoom
     this.pointer = { x: 0, y: 0, smoothX: 0, smoothY: 0 };
-    this.userOrbit = { rotY: 0, rotX: 0, targetRotY: 0, targetRotX: 0 };
+    this.userOrbit = { rotY: 0, rotX: 0, targetRotY: 0, targetRotX: 0, zoom: 1, targetZoom: 1 };
     this.scrollState = {
       robotX: this.isMobile ? 0 : 1.35,
       robotY: 0,
@@ -192,9 +192,10 @@ export class SceneManager {
       this.pointer.smoothX += (this.pointer.x - this.pointer.smoothX) * 0.05;
       this.pointer.smoothY += (this.pointer.y - this.pointer.smoothY) * 0.05;
 
-      // Smooth interactive 360° orbit interpolation
+      // Smooth interactive 360° orbit & zoom interpolation
       this.userOrbit.rotY += (this.userOrbit.targetRotY - this.userOrbit.rotY) * 0.09;
       this.userOrbit.rotX += (this.userOrbit.targetRotX - this.userOrbit.rotX) * 0.09;
+      this.userOrbit.zoom += (this.userOrbit.targetZoom - this.userOrbit.zoom) * 0.09;
 
       // Subtle specular light sweep across the chassis
       this.sweepLight.position.x = Math.sin(elapsed * 0.65) * 3.4 + this.pointer.smoothX * 1.2;
@@ -206,7 +207,7 @@ export class SceneManager {
         const pw = this.scrollState.parallaxWeight;
         this.robot.root.position.x = this.scrollState.robotX;
         this.robot.root.position.z = this.scrollState.robotZ;
-        this.robot.root.scale.setScalar(this.scrollState.scale);
+        this.robot.root.scale.setScalar(this.scrollState.scale * this.userOrbit.zoom);
 
         this.robot.pivot.rotation.y =
           this.scrollState.rotY + this.userOrbit.rotY + this.pointer.smoothX * 0.24 * pw;

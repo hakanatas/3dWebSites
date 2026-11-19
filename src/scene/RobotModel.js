@@ -421,18 +421,18 @@ export class RobotModel {
 
     // Dual precision intake fingers
     const fingerGeom = new THREE.BoxGeometry(0.06, 0.08, 0.42);
-    const fingerL = new THREE.Mesh(fingerGeom, this.materials.aluminum);
-    fingerL.position.set(-0.18, -0.02, 1.1);
-    fingerL.rotation.y = 0.16;
+    this.fingerL = new THREE.Mesh(fingerGeom, this.materials.aluminum);
+    this.fingerL.position.set(-0.18, -0.02, 1.1);
+    this.fingerL.rotation.y = 0.16;
 
-    const fingerR = new THREE.Mesh(fingerGeom, this.materials.aluminum);
-    fingerR.position.set(0.18, -0.02, 1.1);
-    fingerR.rotation.y = -0.16;
+    this.fingerR = new THREE.Mesh(fingerGeom, this.materials.aluminum);
+    this.fingerR.position.set(0.18, -0.02, 1.1);
+    this.fingerR.rotation.y = -0.16;
 
     const intakeLed = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.025, 0.04), this.materials.led);
     intakeLed.position.set(0, 0.08, 0.9);
 
-    this.armPivot.add(armBoom, wristHub, fingerL, fingerR, intakeLed);
+    this.armPivot.add(armBoom, wristHub, this.fingerL, this.fingerR, intakeLed);
     this.armPivot.rotation.x = 0.22;
 
     armAssembly.add(mastL, mastR, mastBraceTop, mastBraceMid, this.armPivot);
@@ -586,9 +586,43 @@ export class RobotModel {
     return theme;
   }
 
+  setAutonomousDemo(active) {
+    this.demoActive = Boolean(active);
+    if (!this.demoActive && this.armPivot && this.fingerL && this.fingerR) {
+      gsap.to(this.armPivot.rotation, {
+        x: THREE.MathUtils.lerp(0.22, -0.25, this.explodeFactor),
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+      gsap.to(this.fingerL.position, { x: -0.18, duration: 0.45, ease: 'power2.out' });
+      gsap.to(this.fingerR.position, { x: 0.18, duration: 0.45, ease: 'power2.out' });
+      this.materials.led.emissiveIntensity = 1.85;
+    }
+    return this.demoActive;
+  }
+
   update(elapsedTime, delta) {
     // Subtle idle float on the root group
     this.root.position.y = Math.sin(elapsedTime * 1.35) * 0.055;
+
+    if (this.demoActive && !this.usesExternalGlb) {
+      // Live articulated autonomous routine: wheels drive, arm cycles, intake clamps, LEDs pulse
+      const driveSpin = delta * 3.8;
+      this.wheels.forEach((w, idx) => {
+        w.rotation.x += idx % 2 === 0 ? driveSpin : -driveSpin * 0.65;
+      });
+
+      if (this.armPivot) {
+        this.armPivot.rotation.x = -0.18 + Math.sin(elapsedTime * 2.1) * 0.34;
+      }
+      if (this.fingerL && this.fingerR) {
+        const pinch = 0.14 + (Math.sin(elapsedTime * 3.2) * 0.5 + 0.5) * 0.09;
+        this.fingerL.position.x = -pinch;
+        this.fingerR.position.x = pinch;
+      }
+      this.materials.led.emissiveIntensity = 1.5 + Math.sin(elapsedTime * 6.0) * 0.85;
+      return;
+    }
 
     // Gentle wheel idle pulse when exploded
     if (this.explodeFactor > 0.05) {

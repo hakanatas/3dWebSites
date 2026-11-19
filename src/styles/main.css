@@ -836,6 +836,7 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   background: rgba(10, 12, 15, 0.72);
@@ -843,6 +844,40 @@ h3 {
   font-size: 0.8rem;
   color: var(--text-secondary);
   pointer-events: none;
+}
+
+.viewport-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.hud-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--border-hover);
+}
+
+.btn-secondary[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--accent);
 }
 
 /* BÖLÜM 5: KAPANIŞ / GÖRÜŞLER / SSS / İLETİŞİM */

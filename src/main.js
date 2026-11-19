@@ -70,12 +70,15 @@ function initVariantSelector(sceneManager, robotModel) {
   });
 }
 
-function initInteractiveInspection(sceneManager, choreography) {
+function initInteractiveInspection(sceneManager, robotModel, choreography) {
   const viewport = document.getElementById('interactive-viewport');
   const angleLabel = document.getElementById('viewport-angle');
   const btnRear = document.getElementById('btn-view-rear');
+  const btnDemo = document.getElementById('btn-autonomous-demo');
   const btnExplode = document.getElementById('btn-toggle-explode');
   const btnReset = document.getElementById('btn-view-reset');
+  const btnZoomIn = document.getElementById('btn-zoom-in');
+  const btnZoomOut = document.getElementById('btn-zoom-out');
 
   let isDragging = false;
   let lastX = 0;
@@ -83,13 +86,16 @@ function initInteractiveInspection(sceneManager, choreography) {
 
   const updateAngleHud = () => {
     if (!angleLabel) return;
-    const rawDeg = Math.round((((sceneManager.scrollState.rotY + sceneManager.userOrbit.targetRotY) * 180) / Math.PI) % 360);
+    const rawDeg = Math.round(
+      (((sceneManager.scrollState.rotY + sceneManager.userOrbit.targetRotY) * 180) / Math.PI) % 360
+    );
     const normalized = (rawDeg + 360) % 360;
     angleLabel.textContent = `${normalized}°`;
   };
 
   if (viewport) {
     viewport.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
       isDragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
@@ -144,6 +150,7 @@ function initInteractiveInspection(sceneManager, choreography) {
     gsap.to(sceneManager.userOrbit, {
       targetRotY: 0,
       targetRotX: 0,
+      targetZoom: 1.08,
       duration: 0.85,
       ease: 'power2.out',
       onUpdate: updateAngleHud
@@ -154,6 +161,7 @@ function initInteractiveInspection(sceneManager, choreography) {
     gsap.to(sceneManager.userOrbit, {
       targetRotY: -Math.PI,
       targetRotX: 0.06,
+      targetZoom: 1,
       duration: 0.9,
       ease: 'power2.out',
       onUpdate: updateAngleHud
@@ -163,6 +171,29 @@ function initInteractiveInspection(sceneManager, choreography) {
   btnExplode?.addEventListener('click', () => {
     const nextState = choreography.getExplodeValue() > 0.5 ? 0 : 1;
     choreography.setManualExplode(nextState);
+  });
+
+  btnDemo?.addEventListener('click', () => {
+    const isNowActive = robotModel.setAutonomousDemo(!robotModel.demoActive);
+    btnDemo.setAttribute('aria-pressed', String(isNowActive));
+    btnDemo.textContent = isNowActive ? 'Otonom Demoyu Durdur' : 'Otonom Demo Çalıştır';
+    if (isNowActive) {
+      gsap.to(sceneManager.userOrbit, {
+        targetRotY: -Math.PI * 0.72,
+        targetRotX: 0.1,
+        duration: 0.9,
+        ease: 'power2.out',
+        onUpdate: updateAngleHud
+      });
+    }
+  });
+
+  btnZoomIn?.addEventListener('click', () => {
+    sceneManager.userOrbit.targetZoom = Math.min(1.45, sceneManager.userOrbit.targetZoom + 0.14);
+  });
+
+  btnZoomOut?.addEventListener('click', () => {
+    sceneManager.userOrbit.targetZoom = Math.max(0.75, sceneManager.userOrbit.targetZoom - 0.14);
   });
 }
 
@@ -232,7 +263,7 @@ async function bootstrap() {
   const choreography = initScrollChoreography(sceneManager, robotModel);
 
   initVariantSelector(sceneManager, robotModel);
-  initInteractiveInspection(sceneManager, choreography);
+  initInteractiveInspection(sceneManager, robotModel, choreography);
 
   sceneManager.start();
   hidePreloader();

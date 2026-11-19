@@ -349,6 +349,9 @@
 
             <div class="inspect-actions">
               <button type="button" class="btn btn-primary" id="btn-view-rear">Arka Yüzü Göster</button>
+              <button type="button" class="btn btn-secondary" id="btn-autonomous-demo" aria-pressed="false">
+                Otonom Demo Çalıştır
+              </button>
               <button type="button" class="btn btn-secondary" id="btn-toggle-explode">Parçaları Ayır / Birleştir</button>
               <button type="button" class="btn btn-ghost" id="btn-view-reset">Ön Görünüme Dön</button>
             </div>
@@ -382,8 +385,12 @@
             tabindex="0"
           >
             <div class="viewport-hud">
-              <span class="viewport-hint" id="viewport-hint">Döndürmek için sürükleyin · 360° İnceleme</span>
-              <span class="viewport-angle mono-num" id="viewport-angle">180°</span>
+              <span class="viewport-hint" id="viewport-hint">Döndürmek için sürükleyin · Ok tuşları · 360°</span>
+              <div class="viewport-tools">
+                <button type="button" class="hud-btn" id="btn-zoom-out" aria-label="Uzaklaştır">−</button>
+                <button type="button" class="hud-btn" id="btn-zoom-in" aria-label="Yakınlaştır">+</button>
+                <span class="viewport-angle mono-num" id="viewport-angle">180°</span>
+              </div>
             </div>
           </div>
         </div>
