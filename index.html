@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AG Robotik (#24230 &amp; #28743) — ALKEV Özel Okulları | FTC &amp; FRC</title>
+    <meta
+      name="description"
+      content="ALKEV Özel Okulları AG Robotik (#24230) ve Jr. AG Robotik (#28743) — FIRST Tech Challenge (FTC) ve FRC takımlarımızın 3D interaktif deneyimi, projeleri ve mühendislik vizyonu."
+    />
+    <meta name="theme-color" content="#0a0c0f" />
+    <meta property="og:title" content="AG Robotik — FTC &amp; FRC | ALKEV Özel Okulları" />
+    <meta
+      property="og:description"
+      content="Sahada rakip, değerlerde ortağız; çünkü biz robotlardan fazlasıyız. #24230 AG Robotik &amp; #28743 Jr. AG Robotik."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <!-- Yükleme Ekranı (Preloader) -->
+    <div id="preloader" class="preloader" aria-live="polite" aria-label="3D sahne yükleniyor">
+      <div class="preloader-inner">
+        <div class="preloader-brand">
+          <span class="mono-tag">ALKEV ÖZEL OKULLARI</span>
+          <div class="preloader-title">AG ROBOTİK</div>
+        </div>
+        <div class="preloader-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="preloader-bar" class="preloader-bar-fill"></div>
+        </div>
+        <div class="preloader-meta">
+          <span id="preloader-status">3D Sahne ve PBR Materyaller Hazırlanıyor</span>
+          <span id="preloader-percent" class="mono-num">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sabit Tam Ekran Şeffaf 3D Canvas Katmanı -->
+    <canvas id="scene-canvas" aria-hidden="true"></canvas>
+
+    <!-- 3D Parçalanma (Exploded View) Dinamik Mühendislik Etiketleri -->
+    <div id="hotspot-layer" class="hotspot-layer" aria-hidden="true">
+      <div class="hotspot-pin" data-hotspot="arm">
+        <span class="hotspot-dot"></span>
+        <span class="hotspot-label">Lineer Kaldırma Kolu</span>
+      </div>
+      <div class="hotspot-pin" data-hotspot="electronics">
+        <span class="hotspot-dot"></span>
+        <span class="hotspot-label">REV Control Hub &amp; Batarya</span>
+      </div>
+      <div class="hotspot-pin" data-hotspot="sensor">
+        <span class="hotspot-dot"></span>
+        <span class="hotspot-label">Otonom Görüntü &amp; LiDAR</span>
+      </div>
+      <div class="hotspot-pin" data-hotspot="wheel">
+        <span class="hotspot-dot"></span>
+        <span class="hotspot-label">Mecanum 4WD Aktarma</span>
+      </div>
+    </div>
+
+    <!-- Sağ Kenar Bölüm Akış Göstergesi -->
+    <nav class="chapter-rail" id="chapter-rail" aria-label="Sayfa bölümleri">
+      <a href="#hero" class="chapter-dot is-active" data-chapter="hero" aria-label="Bölüm 1: Giriş">
+        <span class="chapter-num">01</span>
+        <span class="chapter-name">Giriş</span>
+      </a>
+      <a href="#muhendislik" class="chapter-dot" data-chapter="muhendislik" aria-label="Bölüm 2: İç Yapı">
+        <span class="chapter-num">02</span>
+        <span class="chapter-name">İç Yapı</span>
+      </a>
+      <a href="#takimlar" class="chapter-dot" data-chapter="takimlar" aria-label="Bölüm 3: Takımlar">
+        <span class="chapter-num">03</span>
+        <span class="chapter-name">Takımlar</span>
+      </a>
+      <a href="#teknik-inceleme" class="chapter-dot" data-chapter="teknik-inceleme" aria-label="Bölüm 4: Teknik İnceleme">
+        <span class="chapter-num">04</span>
+        <span class="chapter-name">Teknik</span>
+      </a>
+      <a href="#kapanis" class="chapter-dot" data-chapter="kapanis" aria-label="Bölüm 5: İletişim">
+        <span class="chapter-num">05</span>
+        <span class="chapter-name">İletişim</span>
+      </a>
+    </nav>
+
+    <!-- Sabit Üst Gezinme Çubuğu -->
+    <header class="site-header" id="site-header">
+      <div class="container header-inner">
+        <a href="#hero" class="brand-logo" aria-label="AG Robotik Ana Sayfa">
+          <span class="brand-mark">AG</span>
+          <span class="brand-text">
+            <strong>AG ROBOTİK</strong>
+            <small>#24230 &amp; #28743</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" id="main-nav" aria-label="Ana menü">
+          <a href="#hero">Ana Sayfa</a>
+          <a href="#muhendislik">FTC Değerleri</a>
+          <a href="#takimlar">Takımlar &amp; Projeler</a>
+          <a href="#teknik-inceleme">Teknik İnceleme</a>
+          <a href="#sss">SSS</a>
+          <a href="#iletisim" class="nav-cta">İletişim</a>
+        </nav>
+
+        <button
+          type="button"
+          class="menu-toggle"
+          id="menu-toggle"
+          aria-label="Menüyü aç veya kapat"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Ana İçerik (3D Sahnenin Üzerinde Akar) -->
+    <main id="main-content">
+      <!-- BÖLÜM 1: HERO / GİRİŞ -->
+      <section id="hero" class="section hero-section" data-scene-section="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">ALKEV ÖZEL OKULLARI · #24230 &amp; #28743</p>
+            <h1 class="hero-title">
+              AG ROBOTİK<br />
+              <span class="hero-subline">more than ROBOTS</span>
+            </h1>
+            <p class="hero-lead">
+              Sahada rakip, değerlerde ortağız; çünkü biz robotlardan fazlasıyız. FIRST Tech Challenge (FTC) ve FRC
+              sahalarında mühendislik, yazılım ve takım ruhunu bir araya getiriyoruz.
+            </p>
+            <div class="hero-actions">
+              <a href="#muhendislik" class="btn btn-primary">Robotu Keşfet</a>
+              <a href="#teknik-inceleme" class="btn btn-secondary">360° Teknik İnceleme</a>
+            </div>
+            <dl class="hero-metrics">
+              <div>
+                <dt>FTC &amp; FRC</dt>
+                <dd>2 Aktif Takım</dd>
+              </div>
+              <div>
+                <dt>Otonom + Sürücü</dt>
+                <dd>Java &amp; Sensör Füzyonu</dd>
+              </div>
+              <div>
+                <dt>Başlangıç Hacmi</dt>
+                <dd>18&Prime; × 18&Prime; × 18&Prime;</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+          <span>Aşağı Kaydır</span>
+          <div class="scroll-line"></div>
+        </div>
+      </section>
+
+      <!-- BÖLÜM 2: DETAY / PARÇALANMA (EXPLODED VIEW) / FTC DEĞERLERİ -->
+      <section id="muhendislik" class="section exploded-section" data-scene-section="exploded">
+        <div class="container">
+          <div class="section-header narrow">
+            <p class="eyebrow">FIRST TECH CHALLENGE DEMEK</p>
+            <h2>Mühendislik, Yazılım ve Değerlerin Birleşimi</h2>
+            <p class="section-desc">
+              Kaydırdıkça robotumuzun iç mimarisi parçalarına ayrılır. Dayanıklı alüminyum şasi, mekanum aktarma organı,
+              akıllı sensörler ve otonom kontrol ünitesi tek bir vizyonda buluşur.
+            </p>
+          </div>
+
+          <!-- Parçalanma Etiketleri (Scroll ile senkronize belirir) -->
+          <div class="exploded-callouts" id="exploded-callouts">
+            <article class="callout-card" data-callout="0">
+              <span class="callout-index">01</span>
+              <h3>Profesyonel Duyarlılık</h3>
+              <p>
+                Kazanmaktan daha değerli olan şeyin nasıl kazandığımız olduğuna inanıyoruz. Sahada kıyasıya yarışırken,
+                saha dışında diğer takımlara destek olarak topluluğumuzu büyütüyoruz.
+              </p>
+            </article>
+
+            <article class="callout-card" data-callout="1">
+              <span class="callout-index">02</span>
+              <h3>Yazılım &amp; Otonom Kontrol</h3>
+              <p>
+                Robotumuza hayat veriyoruz. 30 saniyelik otonom ve 2 dakikalık sürücü kontrollü dönemler için Java ve
+                akıllı sensör algoritmaları geliştiriyoruz.
+              </p>
+            </article>
+
+            <article class="callout-card" data-callout="2">
+              <span class="callout-index">03</span>
+              <h3>Mekanik Mühendislik</h3>
+              <p>
+                REV Robotics, GoBilda, 3D yazıcı parçaları ve lazer kesim plakalarla yaratıcı sorun çözme tekniklerini
+                dayanıklı ve işlevsel tasarımlara dönüştürüyoruz.
+              </p>
+            </article>
+
+            <article class="callout-card" data-callout="3">
+              <span class="callout-index">04</span>
+              <h3>Takım Çalışması</h3>
+              <p>
+                Farklı yetenekleri ortak bir vizyonda buluşturuyoruz. &ldquo;Ben&rdquo; değil &ldquo;Biz&rdquo; diyerek
+                karşılaştığımız her zorluğu iş birliği ve güvenle aşıyoruz.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- BÖLÜM 3: VARYASYON / ÖZELLEŞTİRME SEÇİCİ & PROJELER -->
+      <section id="takimlar" class="section config-section" data-scene-section="variants">
+        <div class="container config-layout">
+          <div class="config-panel">
+            <p class="eyebrow">TAKIMLAR VE SEZON KONFİGÜRASYONU</p>
+            <h2>Takım ve Sezon Modunu Seçin</h2>
+            <p class="section-desc">
+              Aşağıdaki takım veya sezon seçeneklerinden birine tıkladığınızda 3D robotun anodize gövde kaplaması,
+              telemetri ışıkları ve stüdyo atmosferi anında güncellenir.
+            </p>
+
+            <div class="variant-grid" role="group" aria-label="Takım ve sezon seçici">
+              <button
+                type="button"
+                class="variant-btn is-active"
+                id="variant-24230"
+                data-theme="ag24230"
+                aria-pressed="true"
+              >
+                <span class="variant-swatch" style="--swatch: #38bdf8"></span>
+                <span class="variant-info">
+                  <strong>#24230 AG Robotik</strong>
+                  <small>FTC Lise &amp; Yarışma Modu</small>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                class="variant-btn"
+                id="variant-28743"
+                data-theme="jr28743"
+                aria-pressed="false"
+              >
+                <span class="variant-swatch" style="--swatch: #22c55e"></span>
+                <span class="variant-info">
+                  <strong>#28743 Jr. AG Robotik</strong>
+                  <small>FTC Ortaokul &amp; Gelişim Modu</small>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                class="variant-btn"
+                id="variant-frc"
+                data-theme="frcRebuilt"
+                aria-pressed="false"
+              >
+                <span class="variant-swatch" style="--swatch: #f59e0b"></span>
+                <span class="variant-info">
+                  <strong>FRC REBUILT</strong>
+                  <small>Yüksek Tork &amp; Ağır Hizmet</small>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                class="variant-btn"
+                id="variant-biobuzz"
+                data-theme="ftcBiobuzz"
+                aria-pressed="false"
+              >
+                <span class="variant-swatch" style="--swatch: #f43f5e"></span>
+                <span class="variant-info">
+                  <strong>FTC BIOBUZZ</strong>
+                  <small>Sensör &amp; Hassas Tutucu</small>
+                </span>
+              </button>
+            </div>
+
+            <div class="active-theme-readout" id="theme-readout">
+              <div class="readout-row">
+                <span>Aktif Profil</span>
+                <strong id="readout-name">#24230 AG Robotik</strong>
+              </div>
+              <div class="readout-row">
+                <span>Odak Alanı</span>
+                <strong id="readout-focus">Yarışmalar, Ulusal &amp; Uluslararası İşbirlikleri</strong>
+              </div>
+              <div class="readout-row">
+                <span>Aktarma &amp; Yazılım</span>
+                <strong id="readout-spec">Mecanum 4WD · Java Autonomous</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="config-stage-spacer" aria-hidden="true"></div>
+        </div>
+
+        <!-- Projeler & Eğitimler Şeridi -->
+        <div class="container projects-block">
+          <div class="projects-header">
+            <p class="eyebrow">PROJELERİMİZ VE EĞİTİMLER</p>
+            <h3>Robot Bahane — Topluluk ve STEM Projeleri</h3>
+          </div>
+          <div class="projects-list">
+            <article class="project-item">
+              <span class="project-tag">Eğitim</span>
+              <h4>AG Robotik FTC Eğitimleri</h4>
+              <p>Yeni başlayan takımlar için mekanik, Blockly ve Android Studio Java atölyeleri.</p>
+            </article>
+            <article class="project-item">
+              <span class="project-tag">Sosyal Sorumluluk</span>
+              <h4>Braille Alfabesi</h4>
+              <p>Erişilebilirlik odaklı dokunsal öğrenme ve farkındalık materyalleri.</p>
+            </article>
+            <article class="project-item">
+              <span class="project-tag">Uygulama</span>
+              <h4>FTC Decode Puan Hesaplama &amp; Oyun</h4>
+              <p>Takımların strateji ve maç skoru simülasyonu yapabileceği interaktif araçlar.</p>
+            </article>
+            <article class="project-item">
+              <span class="project-tag">Mekanik &amp; STEM</span>
+              <h4>Otomat, Güneş Saati &amp; Sayı Labirenti</h4>
+              <p>Yürüyen Adam otomatı, Sihirli Sayılar, Bir İşlem ve uygulamalı fizik deneyleri.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- BÖLÜM 4: TEKNİK İNCELEME / ARKA YÜZ VE 360° İNTERAKTİF ALAN -->
+      <section id="teknik-inceleme" class="section inspect-section" data-scene-section="inspect">
+        <div class="container inspect-layout">
+          <div class="inspect-controls-panel">
+            <p class="eyebrow">TEKNİK İNCELEME · ARKA YÜZ TELEMETRİ</p>
+            <h2>Robotu 360° İnceleyin</h2>
+            <p class="section-desc">
+              Bu bölümde robot sinematik biçimde dönerek arka teknik bilgi plakasını kameraya çevirir. Sağdaki interaktif
+              alanda fare veya parmağınızla robotu serbestçe döndürebilirsiniz.
+            </p>
+
+            <div class="inspect-actions">
+              <button type="button" class="btn btn-primary" id="btn-view-rear">Arka Yüzü Göster</button>
+              <button type="button" class="btn btn-secondary" id="btn-toggle-explode">Parçaları Ayır / Birleştir</button>
+              <button type="button" class="btn btn-ghost" id="btn-view-reset">Ön Görünüme Dön</button>
+            </div>
+
+            <dl class="tech-specs-list">
+              <div>
+                <dt>Kontrol Sistemi</dt>
+                <dd>REV Control Hub · Java (Android Studio)</dd>
+              </div>
+              <div>
+                <dt>Maç Süresi</dt>
+                <dd>30 sn Otonom · 2 dk Sürücü Kontrollü</dd>
+              </div>
+              <div>
+                <dt>Malzeme &amp; Üretim</dt>
+                <dd>6061 Alüminyum, 3D Baskı, Lazer Kesim</dd>
+              </div>
+              <div>
+                <dt>Takım Yapısı</dt>
+                <dd>Maks. 15 Öğrenci · En Az 2 Mentor</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Yalnızca bu alanda pointer-events: auto ile 3D obje döndürülür -->
+          <div
+            class="interactive-viewport"
+            id="interactive-viewport"
+            role="region"
+            aria-label="İnteraktif 3D robot inceleme alanı"
+            tabindex="0"
+          >
+            <div class="viewport-hud">
+              <span class="viewport-hint" id="viewport-hint">Döndürmek için sürükleyin · 360° İnceleme</span>
+              <span class="viewport-angle mono-num" id="viewport-angle">180°</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BÖLÜM 5: KAPANIŞ / GÖRÜŞLER / SSS / İLETİŞİM -->
+      <section id="kapanis" class="section closing-section" data-scene-section="closing">
+        <div class="container">
+          <!-- Veli Görüşleri -->
+          <div class="testimonials-block">
+            <div class="section-header narrow">
+              <p class="eyebrow">FIRST TURNUVALARINA KATILANLARDAN</p>
+              <h2>Topluluk ve Veli Görüşleri</h2>
+            </div>
+
+            <div class="testimonials-grid">
+              <blockquote class="quote-card">
+                <p>
+                  &ldquo;Oğlumun okulda hiç görmediğim bir liderlik yönünü bu turnuvalarda keşfettim. Kriz anında sakin
+                  kalmayı ve çözüm üretmeyi öğrenmesi, sınav notlarından çok daha değerli bir hayat becerisi.&rdquo;
+                </p>
+                <footer>
+                  <strong>M.K.</strong>
+                  <span>Takım Velisi</span>
+                </footer>
+              </blockquote>
+
+              <blockquote class="quote-card">
+                <p>
+                  &ldquo;Bir robotun sadece metal parçalarından ibaret olmadığını, arkasında ciddi bir matematik, fizik
+                  ve yazılım olduğunu gördü. Okulda öğrendiği formüllerin gerçek hayatta ne işe yaradığını ilk kez burada
+                  anladı.&rdquo;
+                </p>
+                <footer>
+                  <strong>B.D.</strong>
+                  <span>Takım Velisi</span>
+                </footer>
+              </blockquote>
+
+              <blockquote class="quote-card">
+                <p>
+                  &ldquo;Eskiden hafta sonları bilgisayar başından kalkmazdı, şimdi takım arkadaşlarıyla buluşmak için
+                  sabah erkenden atölyeye koşuyor. Ortak bir amaç için birlikte çalışmanın keyfini aldı.&rdquo;
+                </p>
+                <footer>
+                  <strong>L.A.</strong>
+                  <span>Takım Velisi</span>
+                </footer>
+              </blockquote>
+            </div>
+          </div>
+
+          <!-- Sıkça Sorulan Sorular -->
+          <div id="sss" class="faq-block">
+            <div class="section-header narrow">
+              <p class="eyebrow">SIKÇA SORULAN SORULAR</p>
+              <h2>FTC ve AG Robotik Hakkında</h2>
+            </div>
+
+            <div class="faq-list" id="faq-list">
+              <details class="faq-item" open>
+                <summary>FIRST Tech Challenge (FTC) nedir?</summary>
+                <p>
+                  FTC, ortaokul ve lise çağındaki öğrencilerin (Türkiye&apos;de özellikle 5-8. sınıflar ve lise
+                  seviyesi) takımlar halinde yarıştığı uluslararası bir robotik yarışmasıdır. Öğrenciler her yıl
+                  belirlenen tema çerçevesinde robot tasarlar, inşa eder ve programlar; mühendislik, proje yönetimi ve
+                  topluluk bilinci kazanırlar.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Yarışma sezonu ne zaman başlar ve biter?</summary>
+                <p>
+                  Sezon genellikle her yıl Eylül ayında dünya genelinde açıklanan &ldquo;Kickoff&rdquo; (başlangıç) ile
+                  başlar. Yerel ve ulusal turnuvalar kış ve bahar aylarında yapılır; sezon Nisan ayında ABD&apos;de
+                  düzenlenen Dünya Şampiyonası ile sona erer.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>FIRST&apos;ün temel felsefesi nedir?</summary>
+                <p>
+                  FIRST iki temel kavram üzerine kuruludur: <strong>Duyarlı Profesyonellik (Gracious Professionalism)</strong>
+                  ve <strong>İşbirliği (Coopertition)</strong>. Takımlar bir yandan rekabet ederken diğer yandan
+                  birbirlerine saygı duyar ve yardım ederler.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Robotları programlamak için hangi diller kullanılır?</summary>
+                <p>
+                  Robotlar genellikle <strong>Java</strong> dili kullanılarak Android Studio üzerinden programlanır.
+                  Başlangıç seviyesindeki takımlar blok tabanlı kodlama için <strong>Blockly</strong> kullanabilirler.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Robotlar hangi malzemelerden yapılır ve otonom mudur?</summary>
+                <p>
+                  18×18×18 inç başlangıç hacmi dahilinde REV Robotics, GoBilda, Tetrix kitleri, 3D yazıcı parçaları ve
+                  lazer kesim plakalar kullanılır. Maçlar 30 saniyelik <strong>Otonom Periyot</strong> ve 2 dakikalık
+                  <strong>Sürücü Kontrollü Periyot</strong> olmak üzere iki bölümden oluşur.
+                </p>
+              </details>
+
+              <details class="faq-item">
+                <summary>Neden bir FTC takımına sponsor olmalıyım?</summary>
+                <p>
+                  Bir FTC takımına sponsor olmak geleceğin mühendislerine, liderlerine ve yenilikçilerine doğrudan
+                  yatırım yapmaktır. Sponsorlar logolarını robot üzerinde ve takım formalarında sergileyerek görünürlük
+                  kazanır ve kurumsal sosyal sorumluluk (KSS) hedeflerine katkıda bulunurlar.
+                </p>
+              </details>
+            </div>
+          </div>
+
+          <!-- İletişim & Sponsorluk Çağrısı -->
+          <div id="iletisim" class="contact-block">
+            <div class="contact-info">
+              <p class="eyebrow">SPONSORLUK VE İLETİŞİM</p>
+              <h2>Geleceğin Mühendisleriyle Tanışın</h2>
+              <p class="section-desc">
+                Yarışmalar, sosyal sorumluluk projeleri, ulusal ve uluslararası iş birlikleri veya sponsorluk desteği
+                için bizimle iletişime geçin.
+              </p>
+              <address class="contact-address">
+                <strong>ALKEV Özel Okulları</strong>
+                <span>ALKENT 2000 Mh. Mehmet Yeşilgül Cd. No:7</span>
+                <span>Büyükçekmece / İstanbul</span>
+                <a href="https://www.alkevtech.com" target="_blank" rel="noopener noreferrer">www.alkevtech.com</a>
+              </address>
+            </div>
+
+            <form class="contact-form" id="contact-form" novalidate>
+              <div class="form-field">
+                <label for="contact-name">Ad Soyad / Kurum</label>
+                <input type="text" id="contact-name" name="name" placeholder="Örn: Hakan Ataş" required />
+              </div>
+              <div class="form-field">
+                <label for="contact-email">E-posta</label>
+                <input type="email" id="contact-email" name="email" placeholder="ornek@kurum.com" required />
+              </div>
+              <div class="form-field">
+                <label for="contact-message">Mesajınız</label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows="3"
+                  placeholder="Sponsorluk, eğitim veya iş birliği talebiniz..."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" id="contact-submit">Gönder</button>
+              <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 AG Robotik (#24230 &amp; #28743) · ALKEV Özel Okulları</p>
+        <div class="footer-links">
+          <a href="#hero">Yukarı Çık</a>
+          <a href="#sss">SSS</a>
+          <a href="#iletisim">İletişim</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

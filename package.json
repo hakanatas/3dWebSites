@@ -1,0 +1,19 @@
+{
+  "name": "alkevtech-3d-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AG Robotik (#24230 & #28743) — ALKEV Özel Okulları FTC & FRC 3D İnteraktif Web Deneyimi",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173"
+  },
+  "dependencies": {
+    "gsap": "^3.12.7",
+    "three": "^0.172.0"
+  },
+  "devDependencies": {
+    "vite": "^6.1.0"
+  }
+}
